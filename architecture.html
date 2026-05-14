@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3GPP RAG Architecture - AWS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a1a; color: #fff; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 1.8em; color: #64b5f6; }
+        .pipeline { display: flex; gap: 15px; overflow-x: auto; padding: 20px 0; }
+        .phase { flex: 1; min-width: 280px; border-radius: 12px; padding: 20px; }
+        .phase h2 { font-size: 0.9em; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .phase-1 { background: linear-gradient(135deg, #1a237e, #283593); }
+        .phase-2 { background: linear-gradient(135deg, #004d40, #00695c); }
+        .phase-3 { background: linear-gradient(135deg, #b71c1c, #c62828); }
+        .phase-4 { background: linear-gradient(135deg, #4a148c, #6a1b9a); }
+        .phase-5 { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .component { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; margin-bottom: 10px; transition: transform 0.2s; }
+        .component:hover { transform: scale(1.02); background: rgba(255,255,255,0.15); }
+        .component .icon { font-size: 1.5em; margin-bottom: 5px; }
+        .component .name { font-weight: bold; font-size: 0.85em; }
+        .component .detail { font-size: 0.75em; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .arrow { text-align: center; font-size: 1.5em; color: #ff9800; margin: 5px 0; }
+        .event-badge { background: #ff5722; font-size: 0.65em; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+        .subtitle { text-align: center; color: #90a4ae; margin-bottom: 20px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>🏗️ 3GPP Event-Driven Data Sync & Multi-Agent RAG</h1>
+    <p class="subtitle">Production-Grade Serverless Pipeline on AWS</p>
+    <div class="pipeline">
+        <div class="phase phase-1">
+            <h2>1️⃣ INGESTION & EVENT DETECTION</h2>
+            <div class="component"><div class="icon">🌐</div><div class="name">3GPP FTP Servers</div><div class="detail">TS/TR Specs (Word/PDF), Change Requests</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">⏰</div><div class="name">Amazon EventBridge</div><div class="detail">Scheduled: every 1 hour</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">⚡</div><div class="name">AWS Lambda — Change Detector</div><div class="detail">Polls FTP, detects changes</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🪣</div><div class="name">Amazon S3 (Raw)</div><div class="detail">s3://3gpp-data-raw/rel-17/</div><span class="event-badge">s3:ObjectCreated →</span></div>
+        </div>
+        <div class="phase phase-2">
+            <h2>2️⃣ EVENT-DRIVEN PREPROCESSING</h2>
+            <div class="component"><div class="icon">⚡</div><div class="name">AWS Lambda — Preprocessor</div><div class="detail">Triggered by S3 event</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">📄</div><div class="name">Amazon Textract</div><div class="detail">• Table Detection<br>• Layout Analysis</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🔧</div><div class="name">AWS Glue (Serverless)</div><div class="detail">• Hierarchical Parser<br>• Structure-Aware Chunking<br>• Metadata Creator</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🪣</div><div class="name">Amazon S3 (Processed)</div><div class="detail">Parquet + Hypothetical Questions</div><span class="event-badge">s3:ObjectCreated →</span></div>
+        </div>
+        <div class="phase phase-3">
+            <h2>3️⃣ VECTORIZATION & KNOWLEDGE BASE</h2>
+            <div class="component"><div class="icon">⚡</div><div class="name">AWS Lambda — Vector Generator</div><div class="detail">Triggered by S3 event</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🧠</div><div class="name">Amazon SageMaker</div><div class="detail">Embedding Endpoint</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🗄️</div><div class="name">Aurora Serverless + pgvector</div><div class="detail">• UPSERT (Insert/Update)<br>• Vector Store<br>• Rich Metadata<br>• Single Source of Truth</div></div>
+        </div>
+        <div class="phase phase-4">
+            <h2>4️⃣ MULTI-AGENT REASONING (LangGraph)</h2>
+            <div class="component"><div class="icon">🧭</div><div class="name">Planner Agent</div><div class="detail">Query decomposition, multi-step retrieval</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">📋</div><div class="name">TS Analyzer Agent</div><div class="detail">Technical Specification analysis</div></div>
+            <div class="component"><div class="icon">📡</div><div class="name">PHY/MAC Expert Agent</div><div class="detail">Physical/MAC layer expertise</div></div>
+            <div class="component"><div class="icon">🔄</div><div class="name">Release Comparator Agent</div><div class="detail">Rel-X vs Rel-Y comparison</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🚦</div><div class="name">Gatekeeper</div><div class="detail">Release correctness check</div></div>
+            <div class="component"><div class="icon">✅</div><div class="name">Auditor</div><div class="detail">3GPP grounding verification</div></div>
+            <div class="arrow">⬇️</div>
+            <div class="component"><div class="icon">🔴</div><div class="name">Red Teaming & LangSmith</div><div class="detail">Precision, Recall, Cost, Latency</div></div>
+        </div>
+        <div class="phase phase-5">
+            <h2>5️⃣ OUTPUT</h2>
+            <div class="component"><div class="icon">👷</div><div class="name">Engineers / Users</div><div class="detail">3GPP Technical Answers with source references</div></div>
+            <div class="arrow" style="font-size:2em">✨</div>
+            <div class="component"><div class="icon">📊</div><div class="name">Capabilities</div><div class="detail">• Cross-release queries<br>• Spec lookup<br>• PHY/MAC analysis<br>• Change impact<br>• Release comparison</div></div>
+        </div>
+    </div>
+</body>
+</html>
